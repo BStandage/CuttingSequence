@@ -53,8 +53,8 @@ def geodesic(center, radius, color, angle, ax):
 
 
 def draw_farey(seq):
-    for i in range(seq[len(seq) - 1][0]):
-        plt.axvline(x=i, color='blue')
+    for i in range(seq[len(seq) - 1][0]*2):
+        plt.axvline(x=i/2, color='blue')
 
     for i in combinations(seq, 2):
         if not farey_neighbors(i[0], i[1]):
