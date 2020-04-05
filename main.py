@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 from matplotlib.patches import Wedge
-import numpy as np
 import math
 from itertools import combinations
 
@@ -85,6 +84,8 @@ def farey_neighbors(p1, p2):
 if __name__ == '__main__':
     x = float(input('Please input a value for x: '))
     p = float(input('Input a value for p such that ceil(x) >= p >= x/2: '))
+
     while p < x/2 or p > math.ceil(x):
         p = float(input('Please input a valid p such that ceil(x) >= p >= x/2: '))
+
     draw(x, p)
