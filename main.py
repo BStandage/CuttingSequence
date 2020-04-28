@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from matplotlib.patches import Wedge
-import matplotlib.animation as animation
+from matplotlib.animation import FuncAnimation
 from matplotlib import style
 import math
 from itertools import combinations
@@ -8,9 +8,8 @@ import numpy as np
 
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
-line, = ax.plot(0, 0)
-x_data=[]
-y_data=[]
+xdata, ydata = [], []
+ln, = plt.plot([], [], 'r', animated=True)
 
 
 # returns a list which contain the elements of the Farey sequence
@@ -45,12 +44,67 @@ def draw(x, p):
     ax.xaxis.set_ticks_position('bottom')
     ax.yaxis.set_ticks_position('left')
 
-    theta = intersection(x, p)
+    #theta = intersection(x, p)
+    #theta_start = theta[2]
+    #theta_end = theta[3]
+    #geodesic((x - p, 0), p, 'pink', theta_start, ax)
+    #special_case_geodesic((x - p, 0), p, theta_start, theta_end)
+    #special_case_geodesic((abs(x - p) + 1, 0), p, np.radians(180) - theta_start, np.radians(180) - theta_end)
+    #special_case_geodesic((abs(x - p), 0), p, np.radians(180) - theta_end, 0)
+    #special_case_geodesic((abs(x - p), 0), p, np.radians(180) - theta_end, 0)
+
+    # initial center
+    center = (x-p, 0)
+    radius = p
+    theta = intersection(center, radius)
     theta_start = theta[2]
     theta_end = theta[3]
-    #geodesic((x - p, 0), p, 'pink', theta_start, ax)
-    special_case_geodesic((x - p, 0), p, theta_start, theta_end)
-    special_case_geodesic((abs(x - p) + 1, 0), p, theta_start + np.radians(90), theta_end + np.radians(90))
+    special_case_geodesic(center, radius, theta_start, theta_end)
+    for i in range(6):
+        # x and p are known.
+        # immediately check if the end of the geodesic will intersect
+        # x = 1 or the semi-circle geodesic
+        if vertical_intersection(radius, center) or center[0] > 1:
+            print("VERT")
+            print('New center: ' + str(center[0]))
+            # recalculate center
+            center = (abs(x - radius), 0)
+
+            # initialize new angles of arc
+            # the first angle is easy. The second angle depends on where it intersects NEXT
+            # this is the NEXT angle
+            theta_start = np.radians(180) + theta_end
+            # if nan we have another vertical intersection
+            if math.isnan(intersection(center, radius)[3]):
+                # get angle to vertical intersection. x length = 1 - center[0]?
+                theta_end = np.arccos((1 - center[0]) / radius)
+            else:
+                theta_end = intersection(center, radius)[3]
+            special_case_geodesic(center, radius, theta_start, theta_end)
+
+        else:
+            print("Semi-Circle intersection")
+            # recalculate center
+            if center[0] > 0:
+                center = (1 - abs(center[0]), 0)
+            else:
+                center = (1 + abs(center[0]), 0)
+            print('New center: ' + str(center[0]))
+            theta_start = np.radians(180) - theta_start
+            theta_end = np.radians(180) - theta_end
+            special_case_geodesic(center, radius, theta_start, theta_end)
+
+
+
+        # if it intersects x = 1, we simply continue the same circle except the new
+        # center abs(x-p)
+        # once we know where it intersects, we must pass the necessary info to the
+        # draw geodesic function. For example, if the current path intersects the
+        # semi-circle geodesic then we know that the next geodesic has the attributes:
+        # theta1 = 180 - theta1, theta2 = 180 - theta2, center = abs(x-p) + 1
+        # if it intersects x = 1
+        # theta1 = 180 - thetaEnd, theta2 = intersection, center = abs(x-p)
+
 
     # control the depth to which the Farey diagram is drawn
     depth = 8
@@ -59,7 +113,7 @@ def draw(x, p):
     plt.xlim(0, math.ceil(x)+.01)
     plt.ylim(0, math.ceil(x)+.01)
 
-    #plt.savefig('fareyGauss4.1.png', dpi=200)
+    plt.savefig('fareyGauss4.1.png', dpi=200)
     plt.show()
 
 
@@ -76,7 +130,8 @@ def special_case_geodesic(center, radius, theta_start, theta_end):
     x = center[0] + radius*np.cos(t)
     y = radius*np.sin(t)
 
-    plt.plot(x, y)
+    plt.plot(x, y, color='red')
+
 
 
 # draws the Farey sequence
@@ -115,26 +170,41 @@ def gauss_map(x):
 
 
 # if intersection, check whether it is with x = 1 or a curved geodesic
-def intersection(x, p):
+def intersection(center, p):
     # let g be a tuple which contains x and p
     # f is the semi circle with radius .5 centered at (.5, 0)
     # if x < 1, we know that the intersection occurs with the semicircle geodesic
     radius = p
+    center = center[0]
     if x < 1:
-        d = abs(.5 - (x - radius))
-        print('d: ' + str(d))
+        d = abs(.5 - center)
         # we need to find the point of intersection
-        xpos = (radius**2 - .25 + d**2) / (2 * d) - abs(x-radius)
+        xpos = (radius**2 - .25 + d**2) / (2 * d) - abs(center)
         print('x: ' + str(xpos))
-        print('sqrt( ' + str(radius**2 - (xpos + abs((x - p)))**2))
-        ypos = math.sqrt(radius**2 - (xpos + abs((x - p)))**2)
+        print('is y^2 position?: ' + str(radius**2 - (xpos + abs(center) % 1)**2))
+        ypos = math.sqrt(abs(radius**2 - (xpos + abs(center) % 1)**2))
         print('y: ' + str(ypos))
         theta_end = np.arcsin(ypos/radius)
-        theta_start = np.arccos(abs(x-radius)/radius)
+        theta_start = np.arccos(abs(center)/radius)
         print('theta start: ' + str(np.degrees(theta_start)))
         print('theta end: ' + str(np.degrees(theta_end)))
 
         return [xpos, ypos, theta_start, theta_end]
+
+
+
+# we need a boolean intersection funciton which tells you whether the path of the geodesic
+# will intersect with the semi-circle geodesic or intersect with the vertical geodesic at x=1.
+def vertical_intersection(radius, center):
+    d = abs(.5 - center[0])
+    if d < abs(.5 - radius):
+        print("Vertical intersected")
+        return True
+    else:
+        return False
+
+
+
 
 
 if __name__ == '__main__':
