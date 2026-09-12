@@ -4,7 +4,6 @@ An interactive visualization of the correspondence between **geodesics on the mo
 
 A geodesic in the hyperbolic upper half-plane is traced as it crosses the edges of the Farey tessellation. The sequence of crossings — the *cutting sequence* — encodes the continued fraction expansion of the geodesic's endpoint on the real line.
 
-![Farey tessellation with traced geodesic](fareyGauss4.1.png)
 
 ---
 
