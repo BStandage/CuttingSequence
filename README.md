@@ -2,8 +2,12 @@
 
 An interactive visualization of the correspondence between **geodesics on the modular surface** and **continued fraction expansions**.
 
-A geodesic in the hyperbolic upper half-plane is traced as it crosses the edges of the Farey tessellation. The sequence of crossings — the *cutting sequence* — encodes the continued fraction expansion of the geodesic's endpoint on the real line.
+Developed in the [Laboratory of Geometry](https://sites.google.com/view/laboratory-of-geometry-iub/past-projects/spring-2020) at Indiana University, Spring 2020 — *Project 2: Dynamics meet Geometry (and Number Theory)*.
+Faculty coordinator: Dylan Thurston. Graduate mentors: Homin Lee, InSung Park. Team: Isaak Mount, Brian Standage.
 
+---
+
+A geodesic in the hyperbolic upper half-plane is traced as it crosses the edges of the Farey tessellation. The sequence of crossings — the *cutting sequence* — encodes the continued fraction expansion of the geodesic's endpoint on the real line.
 
 ---
 
@@ -87,7 +91,7 @@ Please input a value for x: 0.7071067811865476
 Input a value for p such that ceil(x) >= p >= x/2: 0.6
 ```
 
-The figure is written to `fareyGauss4.1.png`. Tessellation depth is set by `depth` in `draw()`; the number of traced arcs is the loop bound in the same function.
+The figure is written to `fareyGauss4.1.png` in the working directory. Tessellation depth is set by `depth` in `draw()`; the number of traced arcs is the loop bound in the same function.
 
 ---
 
