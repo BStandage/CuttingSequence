@@ -10,7 +10,7 @@ A geodesic in the hyperbolic upper half-plane is traced as it crosses the edges 
 
 ## Background
 
-The upper half-plane $\mathbb{H}$ with the metric $ds = |dz|/\operatorname{Im}(z)$ is tiled by the **Farey tessellation**: the ideal triangulation whose vertices are $\mathbb{Q} \cup \{\infty\}$ and whose edges join pairs $p/q$, $r/s$ satisfying the unimodular condition
+The upper half-plane $\mathbb{H}$ with the metric $ds = |dz|/\mathrm{Im}(z)$ is tiled by the **Farey tessellation**: the ideal triangulation whose vertices are $\mathbb{Q} \cup \{\infty\}$ and whose edges join pairs $p/q$, $r/s$ satisfying the unimodular condition
 
 $$|ps - qr| = 1.$$
 
@@ -57,7 +57,7 @@ The folding is what makes the picture finite: rather than following the geodesic
 | Function | Role |
 | --- | --- |
 | `farey_sequence(n, descending, x)` | Farey sequence of order `n` by the neighbour recurrence; integer-translates when `x > 1` |
-| `farey_neighbors(p1, p2)` | Unimodular test $\lvert ps - qr \rvert = 1$ |
+| `farey_neighbors(p1, p2)` | Unimodular test $|ps - qr| = 1$ |
 | `draw_farey(seq)` | Renders the tessellation: vertical geodesics at integers, arcs between neighbours |
 | `intersection(center, p)` | Circle–circle intersection against the unit semicircle; returns the crossing point and the arc's start/end angles |
 | `vertical_intersection(radius, center)` | Decides whether the next crossing is the vertical geodesic at $x = 1$ |
